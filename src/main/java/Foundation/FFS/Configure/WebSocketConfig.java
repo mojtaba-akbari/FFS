@@ -22,7 +22,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/bridge").withSockJS()
+    registry.addEndpoint("/bridge")
+    .setAllowedOrigins("*")
+    .withSockJS()
     .setClientLibraryUrl( "https://cdn.jsdelivr.net/sockjs/1.0.2/sockjs.min.js");
   }
 

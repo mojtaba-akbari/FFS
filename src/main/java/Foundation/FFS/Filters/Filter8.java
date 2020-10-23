@@ -23,7 +23,6 @@ import Foundation.FFS.Units.UnitChain;
 /* Filter8 Provide Owner Simple Calculation And Simple Column
  * Basic Of Owners View System
  * For Complex Calculation Reuse And Make Another Filters
- * Filter8 Can Call Any Filter
  */
 
 @Component
@@ -35,23 +34,17 @@ public class Filter8 extends Filters {
 	public Filter8(ApplicationContext context,String UniqueItem,ArrayList<WindowItem> window) {
 		super(context,UniqueItem, window,FilterType.SEQUENTIAL,FilterTask.VIEW);
 		
-		this.PointX=3;
+		this.PointX=0;
 	}
 	
 	private String FindPricePattern(String id,Double Price) {
 		if (Price > new Double("10000000000000")) {
-			int res=ScoreAssign(id, "Company","Company TRADE-BURST", this.PointX*10,ScoreType.ADDED); // INJECT TO SCORE //
-			
 			return "class=\"bg-danger h4\""; // 1000B
 		}
 		else if (Price > new Double("1000000000000")) {
-			int res=ScoreAssign(id, "Company","Company TRADE-UP", this.PointX*6,ScoreType.ADDED); // INJECT TO SCORE //
-			
 			return "class=\"bg-warning h5\""; // 100B
 		}
 		else if(Price  > new Double("100000000000")) {
-			int res=ScoreAssign(id, "Company","Company TRADE", this.PointX*4,ScoreType.ADDED); // INJECT TO SCORE //
-			
 			return "class=\"text-success h6\""; // 10 B
 		}
 		else return "";

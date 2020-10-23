@@ -22,10 +22,9 @@ import Foundation.FFS.Filters.Filter.FilterType;
 import Foundation.FFS.Units.GraphChain;
 import Foundation.FFS.Units.UnitChain;
 
-/* Filter8 Provide Owner Simple Calculation And Simple Column
+/* Filter9 Provide Owner Simple Calculation And Simple Column
  * Basic Of Owners View System
  * For Complex Calculation Reuse And Make Another Filters
- * Filter8 Can Call Any Filter
  */
 
 @Component
@@ -35,7 +34,7 @@ public class Filter9 extends Filters {
 	public Filter9(ApplicationContext context,String UniqueItem,ArrayList<WindowItem> window) {
 		super(context,UniqueItem, window,FilterType.SEQUENTIAL,FilterTask.VIEW);
 		
-		this.PointX=2;
+		this.PointX=0;
 	}
 	
 	@Override
@@ -88,7 +87,7 @@ public class Filter9 extends Filters {
 				
 			}
 
-			if(i==5) break; // Just Last 5 Day Check 1 week Market Work //
+			if(i==5) break; // Just Last 6 Day Check 1 week Market Work //
 		}
 
 		if(flagclose==false)

@@ -24,9 +24,8 @@ import Foundation.FFS.Units.GraphChain;
 import Foundation.FFS.Units.UnitChain;
 
 /* Filter10 Provide Connection Between Owner Score Table
- * Basic Of Owners View System
+ * Basic Of Owners Score System
  * For Complex Calculation Reuse And Make Another Filters
- * Filter8 Can Call Any Filter
  */
 
 @Component
@@ -36,32 +35,26 @@ public class Filter10 extends Filters {
 	public Filter10(ApplicationContext context,String UniqueItem,ArrayList<WindowItem> window) {
 		super(context,UniqueItem, window,FilterType.SEQUENTIAL,FilterTask.SCORE);
 		
-		this.PointX=3;
+		this.PointX=2;
 	}
 	
-	private String FindPricePattern(String id,Double Price) {
+	private void FindPricePattern(String id,Double Price) {
 		if (Price > new Double("10000000000000")) {
-			int res=ScoreAssign(id, "Company","Company TRADE-BURST", this.PointX*10,ScoreType.ADDED); // INJECT TO SCORE //
-			
-			return "class=\"bg-danger h4\""; // 1000B
+			int res=ScoreAssign(id, "Company","Company TRADE-BURST", this.PointX*5,ScoreType.ADDED); // INJECT TO SCORE //
 		}
 		else if (Price > new Double("1000000000000")) {
-			int res=ScoreAssign(id, "Company","Company TRADE-UP", this.PointX*6,ScoreType.ADDED); // INJECT TO SCORE //
-			
-			return "class=\"bg-warning h5\""; // 100B
+			int res=ScoreAssign(id, "Company","Company TRADE-UP", this.PointX*4,ScoreType.ADDED); // INJECT TO SCORE //
 		}
 		else if(Price  > new Double("100000000000")) {
-			int res=ScoreAssign(id, "Company","Company TRADE", this.PointX*4,ScoreType.ADDED); // INJECT TO SCORE //
+			int res=ScoreAssign(id, "Company","Company TRADE", this.PointX*2,ScoreType.ADDED); // INJECT TO SCORE //
 			
-			return "class=\"text-success h6\""; // 10 B
 		}
-		else return "";
 	}
 	
 	@Override
 	public void run(String id,String item,ArrayList<String> FilterResult) throws Exception {
 		setIDItem(id); // Owner Id
-		setItem(item); // Owner Share Id
+		setItem(item); // Owner (Share Id)
 
 		// Task //
 		// Fetch Data From SnapShot Of Key//
@@ -74,7 +67,8 @@ public class Filter10 extends Filters {
 
 		long realtimeprice=Long.parseLong(gc.ShareConnection.get(item).US.getHeadToLastItemPointer().getUnitContent().split(",")[6]);//Index 6 References To InRamDBShare//
 
-
+		FindPricePattern(item,new Double(Capacity*realtimeprice));
+		
 		//Calculation Time line//
 
 		String timeline=gc.ShareConnection.get(item).TimeLine.getUnitContent().replace(",","->"); // Split Just In Time //
@@ -125,9 +119,9 @@ public class Filter10 extends Filters {
 				long[] foundincreaseiteration=difference>0?FindIncreaseDayIteration(i,cpTimeLine):null;
 				
 				if(difference>0) {
-					int res=foundincreaseiteration[1]>=10 && foundincreaseiteration[0]<=10?ScoreAssign(item, "Company-Power","Company-Power FIRE", this.PointX*10,ScoreType.ADDED):
-					foundincreaseiteration[1]>=5 && foundincreaseiteration[0]<=10?ScoreAssign(item, "Company-Power","Company-Power FOCUS", this.PointX*8,ScoreType.ADDED):
-					foundincreaseiteration[1]>=2 && foundincreaseiteration[0]<=20?ScoreAssign(item, "Company-Power","Company-Power VISION", this.PointX*6,ScoreType.ADDED):0;
+					int res=foundincreaseiteration[1]>=10 && foundincreaseiteration[0]<=10?ScoreAssign(item, "Company-Power","Company-Power FIRE", this.PointX*8,ScoreType.ADDED):
+					foundincreaseiteration[1]>=5 && foundincreaseiteration[0]<=10?ScoreAssign(item, "Company-Power","Company-Power FOCUS", this.PointX*6,ScoreType.ADDED):
+					foundincreaseiteration[1]>=2 && foundincreaseiteration[0]<=20?ScoreAssign(item, "Company-Power","Company-Power VISION", this.PointX*4,ScoreType.ADDED):0;
 				}
 
 				break; // Find First Change And Break //

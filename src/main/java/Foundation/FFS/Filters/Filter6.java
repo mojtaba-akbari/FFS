@@ -30,6 +30,8 @@ public class Filter6 extends Filters {
 	
 	public Filter6(ApplicationContext context,String UniqueItem,ArrayList<WindowItem> window) {
 		super(context,UniqueItem, window,FilterType.SEQUENTIAL,FilterTask.PROVIDER);
+		
+		this.PointX=0;
 	}
 	
 	private String GraphSharesOwn(String input,String CompanyISIN) throws Exception {

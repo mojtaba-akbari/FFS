@@ -35,7 +35,7 @@ public class Filter1 extends Filters {
 		
 		
 		// Occurrence > 3 : (Point=1 * Fix Metric For Filter=1) = 1 -----> If Continue This Increase :) Flow Of Data Should Sense //
-		int res=occurence>=4?ScoreAssign(id, "Occurance","Occurance UP", this.PointX*1,ScoreType.ADDED):0; // INJECT TO SCORE //
+		int res=occurence>=4?ScoreAssign(id, "Occurrence","Occurrence UP", this.PointX*1,ScoreType.ADDED):0; // INJECT TO SCORE //
 		
 		FilterResult.add("Occurs "+String.valueOf(occurence));
 	}

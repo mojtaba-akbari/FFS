@@ -50,7 +50,7 @@ public class Filter4 extends Filters {
 	public Filter4(ApplicationContext context,String UniqueItem,ArrayList<WindowItem> window) {
 		super(context,UniqueItem, window,FilterType.SEQUENTIAL,FilterTask.VIEW_SCORE);
 		
-		this.PointX=3;
+		this.PointX=2;
 	}
 	
 	private double[] BuySellFoundation() {
@@ -106,7 +106,7 @@ public class Filter4 extends Filters {
 			
 			behavior+=(inb==0)?TypeTrader.UNKNOWN.toString():TypeTrader.COMPANY.toString()+"*"+String.valueOf(ins)+" ";
 			
-			int resscore=(inb>=2)?ScoreAssign(this.IDItem, "Company","Company BEHAVIOR", this.PointX*1,ScoreType.ADDED):0;
+			int resscore=(inb>=2)?ScoreAssign(this.IDItem, "Company","Company BEHAVIOR", this.PointX+1,ScoreType.ADDED):0;
 		}
 		
 		return behavior.equals("")? TypeTrader.UNKNOWN.toString()+"/"+TypeTrader.PERSONAL.toString():behavior;
@@ -123,15 +123,15 @@ public class Filter4 extends Filters {
 		String Result="";
 
 		double[] res=BuySellFoundation();
-		String buyfoundation=(res[0] > new Double("300000000000"))?"<h4 class=\"text-danger\">"+"Buy Found "+String.valueOf(new BigDecimal(res[0]).toPlainString())+"</h4>":"Buy Normal";
-		String sellfoundation=(res[1] > new Double("300000000000"))?"<h4 class=\"text-danger\">"+"Sell Found "+String.valueOf(new BigDecimal(res[1]).toPlainString())+"</h4>":"Sell Normal";
+		String buyfoundation=(res[0] > new Double("3000000000000"))?"<h4 class=\"text-danger\">"+"Buy Found "+String.valueOf(new BigDecimal(res[0]).toPlainString())+"</h4>":"Buy Normal";
+		String sellfoundation=(res[1] > new Double("3000000000000"))?"<h4 class=\"text-danger\">"+"Sell Found "+String.valueOf(new BigDecimal(res[1]).toPlainString())+"</h4>":"Sell Normal";
 		String behavior=BehaviorFoundation();
 		
 		Result+=buyfoundation+" <hr /> "+sellfoundation+" <hr /> "+behavior;
 		
 		//Efect Of Capacity//
-		int resscore=(res[0] > new Double("300000000000"))?ScoreAssign(id, "Buy","Buy BURST", this.PointX*3,ScoreType.ONETIME): // Buyfoundation More Than 100B //
-		(res[0] > new Double("200000000000"))?ScoreAssign(id, "Buy","Buy UP", this.PointX*2,ScoreType.ONETIME):0; // Buyfoundation More Than 10B //
+		int resscore=(res[0] > new Double("3000000000000"))?ScoreAssign(id, "Buy","Buy BURST", this.PointX*8,ScoreType.ONETIME): // Buyfoundation More Than 100B //
+		(res[0] > new Double("2000000000000"))?ScoreAssign(id, "Buy","Buy UP", this.PointX*6,ScoreType.ONETIME):0; // Buyfoundation More Than 10B //
 		
 		FilterResult.add(Result);
 		

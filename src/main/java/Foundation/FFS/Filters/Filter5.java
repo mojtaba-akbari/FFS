@@ -32,14 +32,14 @@ public class Filter5 extends Filters {
 	public Filter5(ApplicationContext context,String UniqueItem,ArrayList<WindowItem> window) {
 		super(context,UniqueItem, window,FilterType.SEQUENTIAL,FilterTask.SCORE);
 		
-		this.PointX=3;
+		this.PointX=2;
 	}
 	
 	private int BigTrade(long capacity,double price) {
-		return capacity*price>new Long("8000000000")?3:(capacity*price >new Long("6000000000")?2:(capacity*price>new Long("4000000000")?1:0)); // 600M Trade 400M Trade 200M Trade
+		return capacity*price>new Long("8000000000")?3:(capacity*price >new Long("6000000000")?2:(capacity*price>new Long("4000000000")?1:0)); // 800M Trade 600M Trade 400M Trade
 	}
 	
-	private String RecordTradeDownload(String input) throws Exception {
+	private void RecordTradeDownload(String input) throws Exception {
 		//Sample Of XML DOC//
 		/*<?xml version="1.0" encoding="UTF-8"?>
 			<rows>
@@ -66,9 +66,6 @@ public class Filter5 extends Filters {
 		input=null;
 		System.gc();
 		
-		//Making Table For Result//
-		String value="<div style=\"overflow: auto;height:200px;width:100px\">";
-		
 		//Root Element//
 		NodeList root=doc.getElementsByTagName("row");
 		
@@ -76,18 +73,18 @@ public class Filter5 extends Filters {
 		// First Time > 500 -> Filter INPUT/OUTPUT MID //
 		// After Some Times > 700 -> Filter INPUT/OUTPUT UP //
 		// At Total Upper Than 400000 Has Total Point //
-		int res=root.getLength()>40000?ScoreAssign(this.IDItem,"INPUT/OUTPUT", "INPUT/OUTPUT FIRE", this.PointX*15,ScoreType.ONETIME):
-			(root.getLength()>20000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT BURST", this.PointX*12,ScoreType.ONETIME):
-				root.getLength()>10000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT LOT", this.PointX*10,ScoreType.ONETIME):
-					root.getLength()>8000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT MUCH", this.PointX*4,ScoreType.ONETIME):
-						root.getLength()>6000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT UPPER", this.PointX*3,ScoreType.ONETIME):
-							root.getLength()>3000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT UP", this.PointX*2,ScoreType.ONETIME):
-								root.getLength()>1000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT MID", this.PointX*1,ScoreType.ONETIME):0
+		int res=root.getLength()>40000?ScoreAssign(this.IDItem,"INPUT/OUTPUT", "INPUT/OUTPUT FIRE", this.PointX*10,ScoreType.ONETIME):
+			(root.getLength()>20000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT BURST", this.PointX*8,ScoreType.ONETIME):
+				root.getLength()>10000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT LOT", this.PointX*6,ScoreType.ONETIME):
+					root.getLength()>8000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT MUCH", this.PointX*5,ScoreType.ONETIME):
+						root.getLength()>6000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT UPPER", this.PointX*4,ScoreType.ONETIME):
+							root.getLength()>3000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT UP", this.PointX*3,ScoreType.ONETIME):
+								root.getLength()>1000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT MID", this.PointX*2,ScoreType.ONETIME):0
 				);
 		
 		
 		
-		//Every Times We Have A Call From Deep We Run Filter 5 For Checking Trades//
+		//Checking Trades//
 		//So Save Last Element That We Checked And ReCall From That Point//
 		//Faster Algorithm And Prohibit From Calculation Again//
 		//We Save This Pointer To LastTradeItem In Share Storage//
@@ -126,7 +123,7 @@ public class Filter5 extends Filters {
 			//String Style=IsBigTrade?"class=\"text-danger\"":"";
 			
 			res=trade==3?ScoreAssign(this.IDItem, "TRADE","TRADE BURST", this.PointX*2,ScoreType.ADDED):
-				(trade==2?ScoreAssign(this.IDItem, "TRADE","TRADE BIG", this.PointX*1,ScoreType.ADDED):
+				(trade==2?ScoreAssign(this.IDItem, "TRADE","TRADE BIG", this.PointX+1,ScoreType.ADDED):
 					(trade==1?ScoreAssign(this.IDItem, "TRADE","TRADE UP", this.PointX*1,ScoreType.ADDED):0)
 					); // INJECT TO SCORE //
 			
@@ -138,9 +135,9 @@ public class Filter5 extends Filters {
 			double maxprice=Double.valueOf(item[12]);
 			double avgpriceday=(minprice+maxprice)/2;
 			
-			res=trade==3 && price < avgpriceday?ScoreAssign(this.IDItem, "TRADE","TRADE BURST ***HOPE-RES***", this.PointX*3,ScoreType.ADDED):
-				(trade==2 && price < avgpriceday?ScoreAssign(this.IDItem, "TRADE","TRADE BIG ***HOPE-RES***", this.PointX*2,ScoreType.ADDED):
-					(trade==1 && price < avgpriceday?ScoreAssign(this.IDItem, "TRADE","TRADE UP ***HOPE-RES***", this.PointX*1,ScoreType.ADDED):
+			res=trade==3 && price < avgpriceday?ScoreAssign(this.IDItem, "TRADE","TRADE BURST ***HOPE-RES***", this.PointX*5,ScoreType.ADDED):
+				(trade==2 && price < avgpriceday?ScoreAssign(this.IDItem, "TRADE","TRADE BIG ***HOPE-RES***", this.PointX*4,ScoreType.ADDED):
+					(trade==1 && price < avgpriceday?ScoreAssign(this.IDItem, "TRADE","TRADE UP ***HOPE-RES***", this.PointX*3,ScoreType.ADDED):
 						(trade==3 && price==maxprice?ScoreAssign(this.IDItem, "TRADE","TRADE BURST ***HOPE-MAX***", this.PointX*6,ScoreType.ADDED):
 							(trade==2 && price==maxprice?ScoreAssign(this.IDItem, "TRADE","TRADE BIG ***HOPE-MAX***", this.PointX*5,ScoreType.ADDED):
 								(trade==1 && price==maxprice?ScoreAssign(this.IDItem, "TRADE","TRADE UP ***HOPE-MAX***", this.PointX*4,ScoreType.ADDED):0)
@@ -160,18 +157,10 @@ public class Filter5 extends Filters {
 							)
 					);
 			
-			//We Just Show 10 Of Items//
-			//if(i-root.getLength()<=10)
-				//value+="<p "+Style+">"+String.valueOf(id)+"</p><p>time: "+time+"</p><p>Capacity: "+String.valueOf(capacity)+"</p><p>Price: "+String.valueOf(price)+"</p><hr />";
-			
 		}
 
 		//Update Holder//
 		this.getCacheHashMap().get(this.IDItem).getHolder().put("LastTradeElementChecked", icounter);
-		
-		//value+="<p>Numbers Trade: "+root.getLength()+"</p>"+"</div>";
-		
-		return value;
 	}
 
 	// No Parallel //
@@ -187,7 +176,7 @@ public class Filter5 extends Filters {
 	public void run() {
 		// Need 500 for Web DownLoad Data //
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(500);
 			
 			String downloaddata=DownloadData("http://tsetmc.ir/tsev2/data/TradeDetail.aspx?i="+this.IDItem, "GET","OCTED");
 			if(downloaddata != null && downloaddata != "")
@@ -197,9 +186,6 @@ public class Filter5 extends Filters {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// Delete Controller THREAD For TRADE //
-		this.CacheHashMap.get(IDItem).getHolder().remove("TRADE_RUNNER");
 	}
 
 }

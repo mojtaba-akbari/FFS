@@ -150,7 +150,7 @@ function ScoreMin(){
 }
 
 function OwnerRefresh(){
-	var timer=$('#ownerrefresh').val();
+	var timer=30;
 	var seconds=parseInt(timer,10);
 	seconds=seconds*1000;
 	

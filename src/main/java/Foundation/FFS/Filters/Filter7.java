@@ -25,6 +25,8 @@ public class Filter7 extends Filters {
 	
 	public Filter7(ApplicationContext context,String UniqueItem,ArrayList<WindowItem> window) {
 		super(context,UniqueItem, window,FilterType.SEQUENTIAL,FilterTask.PROVIDER);
+		
+		this.PointX=0;
 	}
 	
 	private String GetUniqueNamesAndID(String input,String ISIN) throws Exception {

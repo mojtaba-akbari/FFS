@@ -40,7 +40,9 @@ import Foundation.FFS.Units.UnitChain;
 import Foundation.FFS.Units.UnitEvent;
 
 @Component
-@ComponentScan(basePackages = {"Foundation.FFS","Foundation.FFS.DataLayer","Foundation.FFS.WebSockets","Foundation.FFS.Configure","Foundation.FFS.Services","Foundation.FFS.Filters","Foundation.FFS.Units"})
+@ComponentScan(basePackages = {"Foundation.FFS","Foundation.FFS.DataLayer","Foundation.FFS.WebSockets",
+		"Foundation.FFS.Configure","Foundation.FFS.Services","Foundation.FFS.Filters",
+		"Foundation.FFS.Units"})
 public class FFSBootStrapper {
 	
 	@Autowired
@@ -58,7 +60,13 @@ public class FFSBootStrapper {
 		// InRAMDB //
 	private HashMap<String,UnitChain> InRamDBShares;
 	private HashMap<String,UnitChain> InRamDBDeeps;
-	private HashMap<String,GraphChain> InRamDBOwners; // Owner->{Shares} //
+	// Owner->{Shares} //
+	private HashMap<String,GraphChain> InRamDBOwners; 
+	
+	/* Section Storage */
+	
+	
+	
 	
 	@Autowired
 	private GlobalContainer GC;
@@ -66,7 +74,7 @@ public class FFSBootStrapper {
 	/* End Of Section Of Cache Ram DB */
 	
 
-	private int Size=1000; //Size of Tunnels In BrokerTowers Cell//
+	private int Size=3500; //Size of Tunnels In BrokerTowers Cell//
 	
 	@Autowired
 	final private InfluxDBTemplate IDBT;
@@ -163,23 +171,23 @@ public class FFSBootStrapper {
 					
 					System.out.println("Fixed : "+String.valueOf(SChecker.getStatusFix())+
 							" Updated: "+String.valueOf(SChecker.getStatusUpdated())+
-							" ScoreCache:"+CacheScores.size()+
-							" ShareCache:"+CacheBase.size()+
-							" DeepRam :"+InRamDBDeeps.size()+","+RamDBDeepsCells+
-							" ShareRam:"+InRamDBShares.size()+","+RamDBShareCells+
-							" OwnerRam:"+InRamDBOwners.size()+","+OwnerDBCells
+							" ScoreCache: "+CacheScores.size()+
+							" ShareCache: "+CacheBase.size()+
+							" DeepRam: "+InRamDBDeeps.size()+","+RamDBDeepsCells+
+							" ShareRam: "+InRamDBShares.size()+","+RamDBShareCells+
+							" OwnerRam: "+InRamDBOwners.size()+","+OwnerDBCells
 							);
 					
 				}
-				else System.out.println("Result Scrapper Is NULL");
+				else {System.out.println("Result Scrapper Is NULL");}
 				
 				
 				
-				// After First Initial Scraper Run One Timer Per 1 Day //
-				// Do Initial After One Scraper Result Until Our Data Set To Our DataBase //
+				
+				/* Section Timer */
 				
 				if(OwnerCheckerTimer==null) {
-					System.out.println("Owner Timer Phase>>>>>>>>>>>>>>>");
+					System.out.println("[Owner Timer Phase]");
 
 					OwnerCheckerTimer=new Timer();
 
@@ -195,19 +203,19 @@ public class FFSBootStrapper {
 				}
 				
 				if(TradeCheckerTimer==null) {
-					System.out.println("Trade Timer Phase>>>>>>>>>>>>>>>");
+					System.out.println("[Trade Timer Phase]");
 
 					TradeCheckerTimer=new Timer();
 
 					T2TradeTimer TradeTask=new T2TradeTimer();
-					//First Call Is 20000 Later//
-					//So Please Call One Times In Another Tread And Set Timer//
 
-					Timer FirstRun=new Timer(); FirstRun.schedule(new TimerTask() {
-
-						@Override public void run() { TradeTask.run(); FirstRun.cancel();} }, 10*1000);// X Second After DBShare Process Successfully
+					TradeCheckerTimer.schedule(TradeTask,10*1000);// X Second After DBShare Process Successfully
 
 				}
+				
+				
+				
+				/* End Timer Section */
 				
 			}catch(Exception e)
 			{
@@ -231,9 +239,12 @@ public class FFSBootStrapper {
 		
 		@Override
 		public void run() {
+			
 			//ReDownload All Network Of ShareOwner And Set In Storage//
 			ArrayList<Thread> SimplePool=new ArrayList<Thread>();
 			
+			
+			//SNAPSHUT FROM SHARES//
 			Set<String> KeyArray=CacheBase.keySet();
 			
 			
@@ -246,24 +257,18 @@ public class FFSBootStrapper {
 
 					try {
 						
-						if(!CacheBase.get(item).getHolder().containsKey("TRADE_RUNNER")) {
-							
-							//Thread Safe For TRADE Downloaded//
-							CacheBase.get(item).getHolder().put("TRADE_RUNNER", 1);
-							
-							Filters f5=new Filter5(applicationContext,null,null);
-							f5.setIDItem(item); // Need
-							f5.setItem(null); // Do Not Need
-							
-							
-							SimplePool.add(new Thread(f5));
-							SimplePool.get(SimplePool.size()-1).start();
-						}
-						
+						Filters f5=new Filter5(applicationContext,null,null);
+						f5.setIDItem(item); // Need
+						f5.setItem(null); // Do Not Need
+
+
+						SimplePool.add(new Thread(f5));
+						SimplePool.get(SimplePool.size()-1).start();
+
 						if(SimplePool.size()==15) {
 							for(int k=0;k<SimplePool.size();k++)
 								SimplePool.get(k).join(); // Wait All X Thread Closed //
-						
+
 							SimplePool.clear();
 						}
 						

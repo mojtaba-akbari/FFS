@@ -95,7 +95,16 @@ public class Filter5 extends Filters {
 			lastitemanalyzed=(Integer)this.getCacheHashMap().get(this.IDItem).getHolder().get("LastTradeElementChecked");
 		else 
 			this.getCacheHashMap().get(this.IDItem).getHolder().put("LastTradeElementChecked", 0);
-				
+		
+		
+		// Check Renew Trade //
+		// New Download Should root has less than last item analyzed //
+		if(lastitemanalyzed >= root.getLength()) {
+			lastitemanalyzed=0;
+			this.getCacheHashMap().get(this.IDItem).getHolder().put("LastTradeElementChecked", 0);
+		}
+		
+		
 		long CounterTradeInMaxPrice=0;
 		int icounter=lastitemanalyzed;
 		

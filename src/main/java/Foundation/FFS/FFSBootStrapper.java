@@ -1,6 +1,8 @@
 package Foundation.FFS;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,6 +148,7 @@ public class FFSBootStrapper {
 		// First Initial Of Timers //
 		Timer OwnerCheckerTimer=null;
 		Timer TradeCheckerTimer=null;
+		Timer RenewDayTimer=null;
 		
 		while(true) {
 			// Sequence Jobs //
@@ -179,7 +182,10 @@ public class FFSBootStrapper {
 							);
 					
 				}
-				else {System.out.println("Result Scrapper Is NULL");}
+				else {
+					
+					System.out.println(" ***Download Market Error*** ");
+				}
 				
 				
 				
@@ -213,6 +219,21 @@ public class FFSBootStrapper {
 
 				}
 				
+				if(RenewDayTimer==null) {
+					System.out.println("[Renew Day Timer Phase]");
+
+					RenewDayTimer=new Timer();
+
+					T3RenewDayTimer RenewDay=new T3RenewDayTimer();
+					
+					Calendar today = Calendar.getInstance();
+					today.set(Calendar.HOUR_OF_DAY, 0);
+					today.set(Calendar.MINUTE, 0);
+					today.set(Calendar.SECOND, 0);
+					
+					TradeCheckerTimer.schedule(RenewDay,today.getTime(),TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)); // Call Every 24 Hour At 0 AM
+
+				}
 				
 				
 				/* End Timer Section */
@@ -230,11 +251,24 @@ public class FFSBootStrapper {
 	}
 	
 	// Section Timer Inner Class //
-
+	
+	class T3RenewDayTimer extends TimerTask{
+		
+		public T3RenewDayTimer() {
+			System.out.println("RenewDay Settel ***");
+		}
+		
+		@Override
+		public void run() {
+			// Clear And Rebase All Of Needed //
+			
+		}
+	}
+	
 	class T2TradeTimer extends TimerTask{
 		
 		public T2TradeTimer() {
-			System.out.println("TradeTimer Settel >>>");
+			System.out.println("TradeTimer Settel ***");
 		}
 		
 		@Override
@@ -290,7 +324,7 @@ public class FFSBootStrapper {
 	class T1OwnerTimer extends TimerTask{
 		
 		public T1OwnerTimer() {
-			System.out.println("OwnerTask Settel >>>");
+			System.out.println("OwnerTask Settel ***");
 		}
 		
 		@Override
@@ -366,6 +400,9 @@ public class FFSBootStrapper {
 										// Make TimeLine For That Share And Owners //
 										UnitChain uc=new UnitChain(owner.get("TL"), true, null);
 										
+										
+										// If Share Was In Storage, So Updated And Get Same As Elements Or New Elements//
+										// Do not need Check Same As Element Just Because Update Item Faster //
 										InRamDBOwners.get(owner.get("ID")).AddShare(simplecells[2],item,Long.parseLong(owner.get("SH")),Float.parseFloat(owner.get("PE")),InRamDBShares.get(item),uc);
 										
 									}

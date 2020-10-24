@@ -20,7 +20,7 @@ public class Filter1 extends Filters {
 	public Filter1(ApplicationContext context,String UniqueItem,ArrayList<WindowItem> window) {
 		super(context,UniqueItem, window,FilterType.SEQUENTIAL,FilterTask.VIEW_SCORE);
 		
-		this.PointX=2; // Multiplication //
+		this.PointX=1; // Multiplication //
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class Filter1 extends Filters {
 			if(Window.get(index).getID().equals(id)) occurence++;
 		
 		
-		// Occurrence > 3 : (Point=1 * Fix Metric For Filter=1) = 1 -----> If Continue This Increase :) Flow Of Data Should Sense //
+		// Occurrence > 4 : (Point=1 * Fix Metric For Filter=1) = 1 -----> If Continue This Increase :) Flow Of Data Should Sense //
 		int res=occurence>=4?ScoreAssign(id, "Occurrence","Occurrence UP", this.PointX*1,ScoreType.ADDED):0; // INJECT TO SCORE //
 		
 		FilterResult.add("Occurs "+String.valueOf(occurence));

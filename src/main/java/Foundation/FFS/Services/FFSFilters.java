@@ -63,7 +63,7 @@ public class FFSFilters implements UnitEvents {
 			//System.out.println("Filter Item : "+this.Item);
 			
 			//Clear Window If Size Reached//
-			if(WindowShare.size() > 1000)
+			if(WindowShare.size() > 500)
 				WindowShare.clear();
 
 			WindowShare.add(new WindowItem(IDItem, "")); //Item // Do Not Item //
@@ -112,7 +112,7 @@ public class FFSFilters implements UnitEvents {
 			ArrayList<String> ResultSet=new ArrayList<String>();
 
 			//System.out.println("Filter Item : "+this.Item);
-			if(WindowDeep.size() > 1000)
+			if(WindowDeep.size() > 500)
 				WindowDeep.clear();
 
 			WindowDeep.add(new WindowItem(IDItem, "")); //Item // Do Not Item //

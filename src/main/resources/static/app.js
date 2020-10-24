@@ -92,14 +92,13 @@ function UpdatedStatusAction_Share(item,id){
 	
 		element.html(item);
 
-		$('#Share > tbody > tr:first').delay(1500).after(element);
+		$('#Share > tbody > tr:first').delay(2000).after(element);
 
 	}
 	else{
-		
 		element="<tr id=share"+id+">"+item+"</tr>";
 		
-		element=$('#Share > tbody > tr:first').delay(1500).append(element);
+		element=$('#Share > tbody > tr:first').delay(2000).append(element);
 	}
 }
 
@@ -136,7 +135,7 @@ function UpdatedStatusAction_Deep(item,id){
 	var element="<tr>"+item+"</tr>";
 	
 	// 2 Sec For Updated Deep //
-	$('#Deep > tbody > tr:first').delay(1500).after(element);
+	$('#Deep > tbody > tr:first').delay(2000).after(element);
 	
 	var sizerow=$('#Deep').find('tr').length;
 	

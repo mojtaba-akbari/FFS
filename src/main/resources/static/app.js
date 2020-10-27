@@ -1,4 +1,6 @@
 var stompClient = null;
+var mobileplatform=false;
+var scoremobileth="";
 
 function connect() {
     var socket = new SockJS('/bridge');
@@ -33,7 +35,31 @@ function connect() {
     
 }
 
+function mconnect() {
+    var socket = new SockJS('/bridge');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log('Mobile-Connected: ' + frame);
+        
+        stompClient.subscribe('/topic/init', function (data) {
+            getInitData(data.body);
+        });
+
+ 		stompClient.send("/app/init", {}, "GetFullList");
+
+
+       	setTimeout(function(){
+			stompClient.subscribe('/topic/score', function (data) {
+            	getBroadCastData(data.body);
+        	});
+
+		},1000);
+		
+    });
+}
+
 function getInitData(message) {
+	
 	var struct=message.split("<>");
 	for(var i=0;i<struct.length-1;i=i+2){
 		var type=struct[i];
@@ -108,9 +134,10 @@ function UpdatedStatusAction_Score(item,id,group){
 	if($('#Score').prop("gstatus")!="true")
 		return;
 	
+	
 	if(group==true){
-		$('#Score > tbody > tr:not(:first)').remove();
-		$('#Score > tbody > tr:first').after(item);
+			$('#Score > tbody > tr:not(:first)').remove();
+			$('#Score > tbody > tr:first').after(item);
 	}
 	else{
 		//If Table Close Return//
@@ -181,13 +208,24 @@ $(function() {
   // Initial Setup //
   //First Initial Of Canvas//
   $(document).ready(function(){
-	//Page Ready//
-	$('#Score').prop("gstatus","true");
-	$('#Share').prop("gstatus","true");
-	$('#Deep').prop("gstatus","true");
-	$('#Owner').prop("gstatus","true");
 	
-	connect();
+	let isMobile = window.matchMedia("only screen and (min-device-width : 264px) and (max-width: 480px)").matches;
+
+    if (isMobile) {
+        $('#Score').prop("gstatus","true");
+		
+		mobileplatform=true;
+		mconnect();
+    }
+	else{
+		$('#Score').prop("gstatus","true");
+		$('#Share').prop("gstatus","true");
+		$('#Deep').prop("gstatus","true");
+		$('#Owner').prop("gstatus","true");
+	
+		connect();
+	}
+
   })
   
 });

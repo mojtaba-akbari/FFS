@@ -1,30 +1,196 @@
-
-
 <!DOCTYPE html>
 <html>
    <head>
+
       <title>FFS Dashbord</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
       <link href="/main.css" rel="stylesheet">
       <script src="/webjars/jquery/jquery.min.js"></script>
       <script src="/webjars/sockjs-client/sockjs.min.js"></script>
       <script src="/webjars/stomp-websocket/stomp.min.js"></script>
       <script src="/app.js"></script>
+
    </head>
    <body>
+
       <noscript>
          <h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
             enabled. Please enable
             Javascript and reload this page!
          </h2>
       </noscript>
-      <div id="main-content" class="container" style="width: 100%;height: 100%;">
+
+      <div id="main-content" style="width: 100%;height: 100%;">
          <table style="width: 100%;height: 100%;table-layout: fixed;">
             <thead>
-               <th class="tg-0lax"></th>
             </thead>
             <tbody>
-               <tr>
+               <tr class="mobile">
+                  <td>
+                     <div class="panel">
+                        <div class="panel-heading bg-primary text-white img-rounded" style="height: 60px;">
+                           <input class="btn btn-success" type="button" id="statusScore" onclick="tablestatus('Score');"  value="Score(On)" />
+                           <input class="btn btn-success" type="button" onclick="ScoreMin()" value="Refresh"/>
+                        </div>
+                        <hr />
+                        <div class="panel-body img-rounded bg-info text-white" style="width:100vw;max-height:300px;height: 300px;overflow:auto;margin: 0px 6px 6px 6px;">
+                           <table id="Score" class="table table-striped">
+                              <thead>
+                              </thead>
+                              <tbody id="tbscores">
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </td>
+               </tr>
+               <tr class="mobile">
+                  <td>
+                     <div class="panel">
+                        <div class="panel-heading bg-primary text-white img-rounded" style="height: 60px;">
+                           <input class="btn btn-success" type="button" value="Exit"/>
+                        </div>
+                        <hr />
+                        <div class="panel-body text-right img-rounded bg-info text-white" style="width:100vw;max-height: 300px;overflow:auto;margin: 0px 6px 6px 6px;" dir="rtl">
+                           <p>
+                              برای استفاده از سیستم ابتدا باید جداول را به درستی درک کنیم. جدول روبرو جدول امتیاز دهی
+                              می باشد. خروجی سیستم با وزن دهی به سهام ها مشخص خواهد شد و تمامی سهام ها با یکدیگر مقایسه می شوند.
+                              امتیازدهی به  یک سهام در لحظه و زمان فعلی می باشد و مطابق با {رفتارهای بازار و کاربران} بر روی سهام مورد نظر تصمیم گیری میشود. در واقع برای خرید یا سرمایه گزاری کردن بر روی یک سهام
+                              باید {حداقل} دارای امتیاز بالای در جدول روبرو باشد.
+                              برداشت های آزاد دیگری بر روی فیلتر ها وجود دارد مثل مشاهده رفتار بلند مدت با یک سهام یا جریان شناوری رفتاری بر روی سهام.
+                              هر سهام به دنبال داشتن امتیاز {دلایل} داشتن آن امتیاز را هم دارد.هر {رفتار قابل تشخیص}  برای سیستم یک {فیلتر} را مشخص می کند.در واقع فیلتر ها
+                              برابر با رفتارها می باشند. فیلترهای سیستم بر اساس معیار و اصول آشنا با رفتار بازار
+                              سهام های موجود را بررسی کرده و هر رفتار بر روی آن سهم را به شمارش می گزارد. بنابراین با تعداد رخ دادن آن رفتار
+                              و دسته بندی کردن آنها در نهایت امتیاز یک سهام در لحظه {فعلی} مشخص میشود.
+                           </p>
+                           <p>نمره رفتار*تعداد تکرار آن رفتار=امتیاز
+                           </p>
+                           <p>Flow:فیلترهای که دارای برچسب (جریان) امتیاز هستند در واقع نشانگری برای میزان و مدت جریان آن فیلتر می باشند
+								بنابراین به صورت مثال ممکن است یک فیلتر با امتیاز بالا جریانی از رفتار را بر روی سهام نشان دهد.در بعضی از مواقع
+								جریان داده ها بیانگر هیجان در یک سهام می باشد.
+						   </p>
+						   <p>لیست رفتارها در زیر آمده است :
+                           </p>
+                           <hr>
+                           <p>Company TRADE-BURST(10): سرمایه حقوقی در سهام بیش از یک هزار میلیارد تومن با قیمت فعلی سهام
+                           </p>
+                           <hr>
+                           <p>Company TRADE-UP(8): سرمایه حقوقی در سهام بیش از یک صد میلیارد تومن با فیمت فعلی سهام
+                           </p>
+                           <hr>
+                           <p>Company TRADE(4): سرمایه حقوقی در سهام بیش از ده میلیارد تومن با قیمت فعلی سهام
+                           </p>
+                           <hr>
+                           <p>Company FIRE(16): قدرت خرید کمتر از ۱۰ روز یک بار بیش از ۱۰درصد خرید اولیه(به شدت سرمایه گزاری)
+                           </p>
+                           <hr>
+                           <p>Company FOCUS(12): قدرت خرید کمتر از ۱۰ روز یکبار بیش از ۵درصد خرید اولیه(تمرکز بر روی سرمایه گزاری)
+                           </p>
+                           <hr>
+                           <p>Company VISION(8): قدرت خرید کمتر از ۲۰ روز یکبار بیش از ۲درصد خرید اولیه(دیدگاه سرمایه گزاری)
+                           </p>
+                           <hr>
+                           <p>INPUT/OUTPUT FIRE(20): تعداد معاملات انجام شده بروی سهام تا این لحظه بیشتر از ۴۰ هزار عدد می باشد
+                           </p>
+                           <hr>
+                           <p>INPUT/OUTPUT BURST(16): تعداد معاملات انجام شده بر روی سهام تا این لحظه بیشتر از ۲۰ هزار عدد می باشد
+                           </p>
+                           <hr>
+                           <p>INPUT/OUTPUT LOT(12): تعداد معاملات انجام شده بر روی سهام تا این لحظه بیشتر از ۱۰ هزار عدد می باشد
+                           </p>
+                           <hr>
+                           <p>INPUT/OUTPUT MUCH(10): تعداد معاملات انجام شده بر روی سهام تا این لحظه بیشتر از ۸ هزار عدد می باشد
+                           </p>
+                           <hr>
+                           <p>INPUT/OUTPUT UPPER(8): تعداد معاملات انجام شده بر روی سهام تا این لحظه بیشتر از ۶ هزار عدد می باشد
+                           </p>
+                           <hr>
+                           <p>INPUT/OUTPUT UP(6): تعداد معاملات انجام شده بر روی سهام تا این لحظه بیشتر از ۳ هزار عدد می باشد
+                           </p>
+                           <hr>
+                           <p>INPUT/OUTPUT MID(4): تعداد معاملات انجام شده بر روی سهام تا این لحظه بیشتر از یک هزار عدد می باشد
+                           </p>
+                           <hr>
+                           <p>Trade BURST(4): معامله بیش از ۸ صد میلیون تومن
+                           </p>
+                           <hr>
+                           <p>Trade BIG(3): معامله بیش از ۶ صد میلیون تومن
+                           </p>
+                           <hr>
+                           <p>Trade UP(2): معامله بیش از ۴ صد میلیون تومن
+                           </p>
+                           <hr>
+                           <p>TRADE BURST ***HOPE-RES***(10): معامله بیش از ۸ صد میلیون تومن با قیمت زیر میانگین-شرایط مفاومت
+                           </p>
+                           <hr>
+                           <p>TRADE BIG ***HOPE-RES***(8): معامله بیش از ۶ صد میلیون تومن با فیمت زیر میانگین-شرایط مقاومت
+                           </p>
+                           <hr>
+                           <p>TRADE UP ***HOPE-RES***(6): معامله بیش از ۴ صد میلیون تومن با قیمت زیر میانگین-شرایط مقاومت
+                           </p>
+                           <hr>
+                           <p>TRADE BURST ***HOPE-MAX***(12): معامله بیش از ۸ صد میلیون تومن با ماکسیمم قیمت-شرایط امید
+                           </p>
+                           <hr>
+                           <p>TRADE BIG ***HOPE-MAX***(10): معامله بیش از ۶ صد میلیون تومن با ماکسیمم قیمت-شرایط امید
+                           </p>
+                           <hr>
+                           <p>TRADE UP ***HOPE-MAX***(8): معامله بیش از ۴ صد میلیون تومن با ماکسیمم قیمت-شرایط امید
+                           </p>
+                           <hr>
+                           <p>NEXT-DAY=5% BURST(24): بیش از ۲ هزار معامله که ۹۰ درصد در قیمت ماکسیسم بوده است-شرایط آینده مثبت
+                           </p>
+                           <hr>
+                           <p>NEXT-DAY=5% TOP(20): بیش از ۲ هزار معامله که ۷۰ درصد در قیمت ماکسیسم بوده است-شرایط آینده مثبت 
+                           </p>
+                           <hr>
+                           <p>NEXT-DAY=5% UP(16): بیش از ۲ هزار معامله که ۵۰ درصد در قیمت ماکسیمم بوده است-شرایط آینده مثبت
+                           </p>
+                           <hr>
+                           <p>Company BEHAVIOR(3)(Flow): رفتار حقوقی کشف شده بر روی سهام
+                           </p>
+                           <hr>
+                           <p>Buy BURST(16)(Flow): سفارش خرید بیش از سیصد میلیارد تومن
+                           </p>
+                           <hr>
+                           <p>Buy UP(12)(Flow): سفارش خرید بیش از دویست میلیارد تومن
+                           </p>
+                           <hr>
+                           <p>COEVar-Buyer BURST(6)(Flow): تغییرات بیش از ۲۰۰درصدی در حجم سفارش خرید
+                           </p>
+                           <hr>
+                           <p>COEVar-Buyer UP(4)(Flow): تغییرات بیش از ۱۰۰درصدی در حجم سفارش خرید
+                           </p>
+                           <hr>
+                           <p>SPEED BURST(6)(Flow): سرعت تغییرات بیش از ۱۵۰درصدی در سفارش خرید
+                           </p>
+                           <hr>
+                           <p>SPEED UP(4)(Flow): سرعت تغییرات بیش از ۱۰۰درصدی در سفارش خرید
+                           </p>
+                           <hr>
+                           <p>Price UP(1)(Flow): افزایش قیمت خرید
+                           </p>
+                           <hr>
+                           <p>Capacity UP(2)(Flow): افزایش حجم خرید
+                           </p>
+                           <hr>
+                           <p>Occurrence UP(1)(Flow): فرکانس تغییرات نسبت به آخرین آپدیت تمامی سهام ها (فرکانس بالای تغییرات)
+                           </p>
+                           <hr>
+                           <p>
+                              جداول دیگر داده های آنلاین بازار با فیلتر های مربوط به هر جدول را نمایش میدهند.برای فعال و غیر فعال کردن جداول بر روی اسم آن جدول کلیک شود.
+                              جدول اول نگهدارنده {سهام ها} و تغییرات قیمتی لحظه ای در آن است
+                              جدول دوم مربوط به {عمق} تمامی سهام های بازار است
+                              و جدول سوم مربوط به {سهام داران عمده} بازار و تغییرات در سبد سهامی آنها  می باشد.
+                              هر جدول علاوه بر فیلدهای مربوط به خود دارای فیلدهای با اسم {فیلتر} هم میباشد که در واقع نشان دهنده مقادیر رفتاری آن سهام
+                              یا سهام دار می باشد. تجزیه و تحلیل کردن این فیلتر ها دقیقا باعث بدست آوردن دیدگاه نسبی به بازار میشود.
+                        </div>
+                     </div>
+                  </td>
+               </tr>
+               <tr class="desktop">
                   <td style="max-width: 50%;">
                      <div class="panel">
                         <div class="panel-heading bg-primary text-white img-rounded " style="height: 60px;">
@@ -62,7 +228,11 @@
                            </p>
                            <p>نمره رفتار*تعداد تکرار آن رفتار=امتیاز
                            </p>
-                           <p>لیست رفتارها در زیر آمده است :
+                           <p>Flow:فیلترهای که دارای برچسب (جریان) امتیاز هستند در واقع نشانگری برای میزان و مدت جریان آن فیلتر می باشند
+								بنابراین به صورت مثال ممکن است یک فیلتر با امتیاز بالا جریانی از رفتار را بر روی سهام نشان دهد.در بعضی از مواقع
+								جریان داده ها بیانگر هیجان در یک سهام می باشد.
+						   </p>
+							<p>لیست رفتارها در زیر آمده است :
                            </p>
                            <hr>
                            <p>Company TRADE-BURST(10): سرمایه حقوقی در سهام بیش از یک هزار میلیارد تومن با قیمت فعلی سهام
@@ -181,13 +351,13 @@
                      </div>
                   </td>
                </tr>
-               <tr>
+               <tr class="desktop">
                   <td class="align-top" colspan="2">
                      <div class="panel">
                         <div class="panel-heading bg-primary text-white img-rounded" style="height: 60px;">
                            <input type="button" id="statusShare" onclick="tablestatus('Share');" class="btn btn-success" value="Shares(On)" />
                         </div>
-						<hr />
+                        <hr />
                         <div class="panel-body img-rounded bg-info text-white" style="max-height:350px;height: 350px;overflow:auto;margin: 0px 6px 6px 6px;">
                            <table id="Share" class="table table-striped">
                               <thead>
@@ -198,13 +368,13 @@
                      </div>
                   </td>
                </tr>
-               <tr>
+               <tr class="desktop">
                   <td class="align-top" colspan="2">
                      <div class="panel">
                         <div class="panel-heading bg-primary text-white img-rounded " style="height: 60px;">
                            <input type="button" id="statusDeep" onclick="tablestatus('Deep');" class="btn btn-success" value="Deeps(On)" />
                         </div>
-						<hr />
+                        <hr />
                         <div class="panel-body img-rounded bg-info text-white" style="max-height:400px;height: 400px;overflow:auto;margin: 0px 6px 6px 6px;">
                            <table id="Deep" class="table table-striped" disabled="true">
                               <thead>
@@ -215,14 +385,14 @@
                      </div>
                   </td>
                </tr>
-               <tr>
+               <tr class="desktop">
                   <td class="align-top" colspan="2">
                      <div class="panel">
                         <div class="panel-heading bg-primary text-white img-rounded " style="height: 60px;">
                            <input type="button" id="statusOwner" onclick="tablestatus('Owner');" class="btn btn-success" value="Owners(On)" />
                            <input class="btn btn-success" type="button" onclick="OwnerRefresh()" value="Refresh"/>
                         </div>
-						<hr />
+                        <hr />
                         <div class="panel-body img-rounded bg-info text-white" style="max-height:500px;height: 500px;overflow:auto;margin: 0px 6px 6px 6px;">
                            <table id="Owner" class="table table-striped">
                               <thead>

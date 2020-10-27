@@ -118,23 +118,26 @@ public class Filters implements Filter,Runnable {
 		
 		//DEV Calculation//
 		double sumofelement=0;
+		
 		for(int i=0;i<=array_element.size()-1;i++)
 			sumofelement=+array_element.get(i);
 		
 		double averageofelement=Math.floor(sumofelement/array_element.size());
+		
 		double variance=0;
 		for(int i=0;i<=array_element.size()-1;i++)
 			variance=+Math.pow(array_element.get(i)-averageofelement,2);
 		
 		variance=Math.floor((variance/array_element.size()));
-		double dev=Math.sqrt(variance);
-		double devcoe=Math.floor(dev/averageofelement*100);
+		
+		double devcoe=Math.floor(variance/averageofelement)*100;
 		
 		//SPEED OF GROWTH//
 		double avgspeed=0;
 		for(int i=0;i<array_element.size()-1;i++)
 			avgspeed+=Math.abs(array_element.get(i)-array_element.get(i+1)); // Add Difference
-		avgspeed=Math.floor(avgspeed/array_element.size());
+		
+		avgspeed=avgspeed/(array_element.size()-1);
 		
 		return new double[]{devcoe,avgspeed};
 	}
@@ -244,7 +247,7 @@ public class Filters implements Filter,Runnable {
 		
 		//Make Item From Updated Item//
 		ScoreChain item=ScoreChain.get(Id);
-		String ListOfReason="<div style=\"max-height: 100px;overflow:auto;\">";
+		String ListOfReason="<div style=\"width:150px;max-height: 100px;overflow:auto;\">";
 		
 		
 		// Get All Reason And Point // 
@@ -261,7 +264,7 @@ public class Filters implements Filter,Runnable {
 		
 		// BroadCast //
 		// Just BroadCast Items With Point More Than 500 //
-		if(item.getPoint() >= 500)
+		if(item.getPoint() >= 250)
 			terminalbroadcast.BroadCast("/topic/score", Id+"<>SCORE<>"+strItem, UnitEvents.Type.SCORE);
 		
 		return succ;

@@ -63,19 +63,23 @@ public class Filter4 extends Filters {
 	}
 	
 	private String BehaviorFoundation() {
+		//Analyze This Deep To Last Deeps//
 		String[] ItemPart=this.Item.split(",");
+		
+		//Number,Price,Capacity//
 		double[] sellitem= {Double.valueOf(ItemPart[5]),Double.valueOf(ItemPart[6]),Double.valueOf(ItemPart[7])};
-		double[] buyitem= {Double.valueOf(ItemPart[2]),Double.valueOf(ItemPart[3]),Double.valueOf(ItemPart[4])};
+		double[] buyitem= {Double.valueOf(ItemPart[3]),Double.valueOf(ItemPart[4]),Double.valueOf(ItemPart[6])};
 		
 		String behavior="";
+		
 		// Make A Neural Network And Decision For This Item //
-		// Per Parameter Type Should * Metric : COMPANY * 3 , 3 is Metric For Insurance
-		// Simple Implement //
 		
 		int ins=0;
 		
 		if(sellitem[0] != 0) {
-			behavior+="Sell(numbers,capacity)";
+			
+			behavior+="Sell(numbers,capacity)=";
+			
 			//Numbers
 			if(sellitem[0] > 8) //With 5 numbers is real but more than near to unreal
 				ins++;
@@ -89,12 +93,13 @@ public class Filter4 extends Filters {
 			
 			//Add One Line For Readability//
 			behavior+="<hr />";
+			
 		}
 		
 		int inb=0;
 		
 		if(buyitem[0] != 0) {
-			behavior+="Buy(numbers,capacity)";
+			behavior+="Buy(numbers,capacity)=";
 			
 			//Numbers
 			if(buyitem[0] > 8) //With 5 numbers is real but more than near to unreal
@@ -106,7 +111,9 @@ public class Filter4 extends Filters {
 			
 			behavior+=(inb==0)?TypeTrader.UNKNOWN.toString():TypeTrader.COMPANY.toString()+"*"+String.valueOf(ins)+" ";
 			
-			int resscore=(inb>=2)?ScoreAssign(this.IDItem, "Company","Company BEHAVIOR", this.PointX+1,ScoreType.ADDED):0;
+			behavior+="<hr />";
+			
+			//int resscore=(inb>=2)?ScoreAssign(this.IDItem, "Company","Company BEHAVIOR", this.PointX+1,ScoreType.ADDED):0;
 		}
 		
 		return behavior.equals("")? TypeTrader.UNKNOWN.toString()+"/"+TypeTrader.PERSONAL.toString():behavior;
@@ -123,15 +130,17 @@ public class Filter4 extends Filters {
 		String Result="";
 
 		double[] res=BuySellFoundation();
-		String buyfoundation=(res[0] > new Double("3000000000000"))?"<h4 class=\"text-danger\">"+"Buy Found "+String.valueOf(new BigDecimal(res[0]).toPlainString())+"</h4>":"Buy Normal";
-		String sellfoundation=(res[1] > new Double("3000000000000"))?"<h4 class=\"text-danger\">"+"Sell Found "+String.valueOf(new BigDecimal(res[1]).toPlainString())+"</h4>":"Sell Normal";
+		
+		String buyfoundation=(res[0] >= new Double("1000000000000"))?"<h4 class=\"text-danger\">"+"Buy Fund "+String.valueOf(new BigDecimal(res[0]).toPlainString())+"</h4>":"Buy Normal";
+		String sellfoundation=(res[1] >= new Double("1000000000000"))?"<h4 class=\"text-danger\">"+"Sell Fund "+String.valueOf(new BigDecimal(res[1]).toPlainString())+"</h4>":"Sell Normal";
+		
 		String behavior=BehaviorFoundation();
 		
 		Result+=buyfoundation+" <hr /> "+sellfoundation+" <hr /> "+behavior;
 		
-		//Efect Of Capacity//
-		int resscore=(res[0] > new Double("3000000000000"))?ScoreAssign(id, "Buy","Buy BURST", this.PointX*8,ScoreType.ONETIME): // Buyfoundation More Than 100B //
-		(res[0] > new Double("2000000000000"))?ScoreAssign(id, "Buy","Buy UP", this.PointX*6,ScoreType.ONETIME):0; // Buyfoundation More Than 10B //
+		//Effect Of Queue//
+		int resscore=(res[0] >= new Double("3000000000000"))?ScoreAssign(id, "Buy","Buy BURST", this.PointX*8,ScoreType.ONETIME): // Buyfoundation More Than 100B //
+		(res[0] >= new Double("1000000000000"))?ScoreAssign(id, "Buy","Buy UP", this.PointX*6,ScoreType.ONETIME):0; // Buyfoundation More Than 10B //
 		
 		FilterResult.add(Result);
 		

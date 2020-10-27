@@ -12,6 +12,9 @@ import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.annotation.PostConstruct;
 
@@ -153,6 +156,7 @@ public class FFSBootStrapper {
 		while(true) {
 			// Sequence Jobs //
 			try {
+				
 				String Result=Scrapper.ScrapperResult().block();
 				
 				if(Result != null)
@@ -204,15 +208,25 @@ public class FFSBootStrapper {
 					Timer FirstRun=new Timer(); FirstRun.schedule(new TimerTask() {
 
 						@Override public void run() { OwnerTask.run(); FirstRun.cancel();} }, 15*1000);// X Second After DBShare Process Successfully
-
-					OwnerCheckerTimer.schedule(OwnerTask, 43200*1000); // Second 12 Hour
+					
+					
+					// Run 1:00 AM //
+					Date date1pm = new java.util.Date();
+					date1pm.setHours(1);
+					date1pm.setMinutes(0);
+					date1pm.setSeconds(0);
+					
+					Date datetommorrow=new Date(date1pm.getTime()+(1000 * 60 * 60 * 24));
+					
+					OwnerCheckerTimer.schedule(OwnerTask, datetommorrow,TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)); // Second 12 Hour
 				}
 				
 				if(TradeCheckerTimer==null) {
 					System.out.println("[Trade Timer Phase]");
 
 					TradeCheckerTimer=new Timer();
-
+					
+					// Timer Just 8:00 AM Per 10 Sec To 6:00 PM //
 					T2TradeTimer TradeTask=new T2TradeTimer();
 
 					TradeCheckerTimer.schedule(TradeTask,10*1000);// X Second After DBShare Process Successfully
@@ -226,12 +240,15 @@ public class FFSBootStrapper {
 
 					T3RenewDayTimer RenewDay=new T3RenewDayTimer();
 					
-					Calendar today = Calendar.getInstance();
-					today.set(Calendar.HOUR_OF_DAY, 0);
-					today.set(Calendar.MINUTE, 0);
-					today.set(Calendar.SECOND, 0);
+					// Run 1:00 AM //
+					Date date0pm = new java.util.Date();
+					date0pm.setHours(0);
+					date0pm.setMinutes(0);
+					date0pm.setSeconds(0);
 					
-					TradeCheckerTimer.schedule(RenewDay,today.getTime(),TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)); // Call Every 24 Hour At 0 AM
+					Date datetommorrow=new Date(date0pm.getTime()+(1000 * 60 * 60 * 24));
+					
+					RenewDayTimer.schedule(RenewDay,datetommorrow,TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)); // Call Every 24 Hour At 0 AM
 
 				}
 				
@@ -255,24 +272,44 @@ public class FFSBootStrapper {
 	class T3RenewDayTimer extends TimerTask{
 		
 		public T3RenewDayTimer() {
-			System.out.println("RenewDay Settel ***");
+			System.out.println("*** RenewDay Settel ***");
 		}
 		
 		@Override
 		public void run() {
-			// Clear And Rebase All Of Needed //
+			System.out.println("*** RenewDay Runing ***");
 			
+			// Clear And Rebase All Of Needed //
+			// 1- Clear All Score Point For Share //
+			// Do Not Need Clear Any Items In Score //
+			// Before Clear Save That Score In DataBase //
+
+			//SNAPSHUT FROM SCORES//
+			Set<String> KeyArray=CacheScores.keySet();
+
+			for (int index=0;index<KeyArray.size();index++) {
+
+				//Check Again For Concurrent Issue//
+				if(CacheScores.containsKey(KeyArray.toArray()[index])) {
+
+					ScoreChain item=(ScoreChain) KeyArray.toArray()[index];
+
+					item.setPoint(0);
+					item.getReason().clear();
+				}
+			}	
 		}
 	}
 	
 	class T2TradeTimer extends TimerTask{
 		
 		public T2TradeTimer() {
-			System.out.println("TradeTimer Settel ***");
+			System.out.println("*** TradeTimer Settel ***");
 		}
 		
 		@Override
 		public void run() {
+			System.out.println("*** TradeTimer Running ***");
 			
 			//ReDownload All Network Of ShareOwner And Set In Storage//
 			ArrayList<Thread> SimplePool=new ArrayList<Thread>();
@@ -324,11 +361,13 @@ public class FFSBootStrapper {
 	class T1OwnerTimer extends TimerTask{
 		
 		public T1OwnerTimer() {
-			System.out.println("OwnerTask Settel ***");
+			System.out.println("*** OwnerTask Settel ***");
 		}
 		
 		@Override
 		public void run() {
+			System.out.println("*** OwnerTask Running ***");
+			
 			//ReDownload All Network Of ShareOwner And Set In Storage//
 
 			Set<String> KeyArray=CacheBase.keySet();

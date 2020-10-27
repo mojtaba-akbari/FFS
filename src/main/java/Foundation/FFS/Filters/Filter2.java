@@ -19,7 +19,7 @@ public class Filter2 extends Filters {
 	public Filter2(ApplicationContext context,String UniqueItem,ArrayList<WindowItem> window) {
 		super(context,UniqueItem, window,FilterType.SEQUENTIAL,FilterTask.VIEW_SCORE);
 		
-		this.PointX=2;
+		this.PointX=1;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class Filter2 extends Filters {
 			Result+="BUY CAPACITY DW "+String.valueOf(buycapacitylast-buycapacitynow+(Result.contains("CSS")?"":" CSS{p-3@mb-2@bg-danger@text-white}"));
 		else if (buycapacitylast < buycapacitynow) {
 			
-			int res=ScoreAssign(id, "Capacity","Capacity UP", this.PointX*2,ScoreType.ADDED); // Capacity More Impress //
+			int res=ScoreAssign(id, "Capacity","Capacity UP", this.PointX*1,ScoreType.ADDED); // Capacity More Impress //
 			
 			Result+="BUY CAPACITY UP "+String.valueOf(buycapacitynow-buycapacitylast+(Result.contains("CSS")?"":" CSS{p-3@mb-2@bg-success@text-white}"));
 		

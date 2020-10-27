@@ -1,6 +1,5 @@
 package Foundation.FFS.Units;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ScoreChain {
@@ -54,7 +53,7 @@ public class ScoreChain {
 		return Point;
 	}
 
-	public void setPoint(int point) {
+	public synchronized void setPoint(int point) {
 		Point = point;
 	}
 

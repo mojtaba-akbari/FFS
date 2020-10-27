@@ -120,7 +120,7 @@ public class FFSViewSchema implements UnitEvents{
 				String id=(String) KeyArray.toArray()[index];
 				ScoreChain item=this.PTRBootStrapper.getCacheScores().get(id);
 				
-				String ListOfReason="<div style=\"max-height: 100px;overflow:auto;\">";
+				String ListOfReason="<div style=\"width:150px;max-height: 100px;overflow:auto;\">";
 
 
 				// Get All Reason And Point // 
@@ -134,12 +134,12 @@ public class FFSViewSchema implements UnitEvents{
 
 				// BroadCast //
 				// Just BroadCast Items With Point More Than 500 //
-				if(item.getPoint() >= 500)
+				if(item.getPoint() >= 250)
 					Scores+="<tr id=\"score"+item.getID()+"\"><td>"+item.getID()+"</td><td>"+item.getName()+"</td><td>"+item.getPoint()+"</td><td>"+ListOfReason+"</td><td>"+item.getType().name()+"</td><td>Score > 500</td></tr>";
 			}
 		}
 		
-		//Refactor Like All Item//
+		//Re factor Like All Item//
 		return "items<><>SCORE<>"+Scores;
 	}
 	private void SetItemRowTableSchema() throws Exception {

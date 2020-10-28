@@ -73,14 +73,20 @@ public class Filter5 extends Filters {
 		// First Time > 500 -> Filter INPUT/OUTPUT MID //
 		// After Some Times > 700 -> Filter INPUT/OUTPUT UP //
 		// At Total Upper Than 400000 Has Total Point //
+		
 		int res=root.getLength()>40000?ScoreAssign(this.IDItem,"INPUT/OUTPUT", "INPUT/OUTPUT FIRE", this.PointX*10,ScoreType.ONETIME):
 			(root.getLength()>20000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT BURST", this.PointX*8,ScoreType.ONETIME):
-				root.getLength()>10000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT LOT", this.PointX*6,ScoreType.ONETIME):
-					root.getLength()>8000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT MUCH", this.PointX*5,ScoreType.ONETIME):
-						root.getLength()>6000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT UPPER", this.PointX*4,ScoreType.ONETIME):
-							root.getLength()>3000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT UP", this.PointX*3,ScoreType.ONETIME):
-								root.getLength()>1000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT MID", this.PointX*2,ScoreType.ONETIME):0
-				);
+				(root.getLength()>10000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT LOT", this.PointX*6,ScoreType.ONETIME):
+					(root.getLength()>8000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT MUCH", this.PointX*5,ScoreType.ONETIME):
+						(root.getLength()>6000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT UPPER", this.PointX*4,ScoreType.ONETIME):
+							(root.getLength()>3000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT UP", this.PointX*3,ScoreType.ONETIME):
+								(root.getLength()>1000?ScoreAssign(this.IDItem, "INPUT/OUTPUT","INPUT/OUTPUT MID", this.PointX*2,ScoreType.ONETIME):0)
+								)
+							)
+						)
+					)
+				)
+				;
 		
 		
 		

@@ -64,6 +64,16 @@ function getInitData(message) {
 	for(var i=0;i<struct.length-1;i=i+2){
 		var type=struct[i];
 		var item=struct[i+1];
+		
+		if(mobileplatform==true){
+			if(type=="tbscores") 
+				type="tbmscores";
+		}
+		else{
+			if(type=="tbscores") 
+				type="tbdscores";
+		}
+			
 		$('#'+type).append(item);
 	}
 
@@ -129,15 +139,21 @@ function UpdatedStatusAction_Share(item,id){
 }
 
 function UpdatedStatusAction_Score(item,id,group){
-	
+	//Table Name//
+	var tablename='#DScore';
+	if(mobileplatform==true)
+		tablename='#MScore';
+		
 	//If Table Close Return//
-	if($('#Score').prop("gstatus")!="true")
+	if($(tablename).prop("gstatus")!="true")
 		return;
 	
 	
 	if(group==true){
-			$('#Score > tbody > tr:not(:first)').remove();
-			$('#Score > tbody > tr:first').after(item);
+			$(tablename+' > tbody > tr:not(:first)').remove();
+			$(tablename+' > tbody > tr:first').after(item);
+			
+			sortTable($(tablename),'asc');
 	}
 	else{
 		//If Table Close Return//
@@ -149,8 +165,10 @@ function UpdatedStatusAction_Score(item,id,group){
 		}
 		else{
 			element="<tr id=\"score"+id+"\">"+item+"</tr>";
-			element=$('#Score > tbody').append(element);
+			element=$(tablename+' > tbody').append(element);
 		}
+		
+		sortTable($(tablename),'asc');
 	}
 }
 
@@ -204,6 +222,27 @@ function tablestatus(item){
 	}
 }
 
+function sortTable($table,order){
+    var $rows = $('tbody > tr:not(:first)', $table);
+    $rows.sort(function (a, b) {
+	
+        var keyA = parseInt($('.sortable', a).text());
+        var keyB = parseInt($('.sortable', b).text());
+
+        if (order=='asc') {
+            return (keyA > keyB) ? 1 : 0;
+        } else {
+            return (keyA > keyB) ? 0 : 1;
+        }
+    });
+
+	$('tbody > tr:not(:first)',$table).remove();
+	
+    $.each($rows, function (index, row) {
+		$('tbody > tr:first',$table).after(row);
+    });
+}
+
 $(function() {  
   // Initial Setup //
   //First Initial Of Canvas//
@@ -212,13 +251,13 @@ $(function() {
 	let isMobile = window.matchMedia("only screen and (min-device-width : 264px) and (max-width: 480px)").matches;
 
     if (isMobile) {
-        $('#Score').prop("gstatus","true");
+        $('#MScore').prop("gstatus","true");
 		
 		mobileplatform=true;
 		mconnect();
     }
 	else{
-		$('#Score').prop("gstatus","true");
+		$('#DScore').prop("gstatus","true");
 		$('#Share').prop("gstatus","true");
 		$('#Deep').prop("gstatus","true");
 		$('#Owner').prop("gstatus","true");

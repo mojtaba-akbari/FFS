@@ -264,7 +264,7 @@ public class Filters implements Filter,Runnable {
 		
 		// BroadCast //
 		// Just BroadCast Items With Point More Than 500 //
-		if(item.getPoint() >= 250)
+		if(item.getPoint() >= 500)
 			terminalbroadcast.BroadCast("/topic/score", Id+"<>SCORE<>"+strItem, UnitEvents.Type.SCORE);
 		
 		return succ;

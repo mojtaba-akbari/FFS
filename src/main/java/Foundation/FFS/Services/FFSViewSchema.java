@@ -134,8 +134,8 @@ public class FFSViewSchema implements UnitEvents{
 
 				// BroadCast //
 				// Just BroadCast Items With Point More Than 500 //
-				if(item.getPoint() >= 250)
-					Scores+="<tr id=\"score"+item.getID()+"\"><td>"+item.getID()+"</td><td>"+item.getName()+"</td><td>"+item.getPoint()+"</td><td>"+ListOfReason+"</td><td>"+item.getType().name()+"</td><td>Score > 500</td></tr>";
+				if(item.getPoint() >= 500)
+					Scores+="<tr id=\"score"+item.getID()+"\"><td>"+item.getID()+"</td><td>"+item.getName()+"</td><td class=\"sortable\">"+item.getPoint()+"</td><td>"+ListOfReason+"</td><td>"+item.getType().name()+"</td><td>Score > 500</td></tr>";
 			}
 		}
 		

@@ -47,7 +47,7 @@ import Foundation.FFS.Units.UnitEvent;
 @Component
 @ComponentScan(basePackages = {"Foundation.FFS","Foundation.FFS.DataLayer","Foundation.FFS.WebSockets",
 		"Foundation.FFS.Configure","Foundation.FFS.Services","Foundation.FFS.Filters",
-		"Foundation.FFS.Units"})
+		"Foundation.FFS.Units","Foundation.FFS.WebServices"})
 public class FFSBootStrapper {
 	
 	@Autowired

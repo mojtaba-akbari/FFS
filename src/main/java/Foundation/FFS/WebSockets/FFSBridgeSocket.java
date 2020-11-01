@@ -20,7 +20,7 @@ public class FFSBridgeSocket {
 	@Autowired
 	FFSBootStrapper strapper;
 	
-	@MessageMapping("/init") //Where We Wait Server Hand Socket //
+	@MessageMapping("/init") //Where We Wait Server Handle Socket //
 	@SendTo("/topic/init") //Where User Wait For Data//
 	public String Init(@Payload String msg) {
 		System.out.println("***STREAM RUNING***");

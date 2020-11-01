@@ -2,20 +2,32 @@ var stompClient = null;
 var mobileplatform=false;
 var scoremobileth="";
 
+// Desktop Connection //
 function connect() {
+	
     var socket = new SockJS('/bridge');
     stompClient = Stomp.over(socket);
+	
+	// Connection  To The Bridge //
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
         
-        stompClient.subscribe('/topic/init', function (data) {
-            getInitData(data.body);
-        });
-
- 		stompClient.send("/app/init", {}, "GetFullList");
-
-
+		// Initial Data Fetch //
+		$.ajax({
+  			url: "/rgw/init",
+  			beforeSend: function( xhr ) {
+    		xhr.overrideMimeType( "text/plain; charset=UTF-8" );
+  			}
+		})
+  			.done(function( data ) {
+    			// Init Data //
+				getInitData(data);
+    		}
+  		);
+		
+		// Subscribe In BroadCast Data //
        	setTimeout(function(){
+	
 			stompClient.subscribe('/topic/share', function (data) {
             	getBroadCastData(data.body);
         	});
@@ -28,32 +40,42 @@ function connect() {
             	getBroadCastData(data.body);
         	});
 
+
 		},5000);
+		// End //
 		
     });
-    
+
+	// End Connection //
     
 }
 
+// Mobile Connection //
 function mconnect() {
     var socket = new SockJS('/bridge');
     stompClient = Stomp.over(socket);
+	
     stompClient.connect({}, function (frame) {
         console.log('Mobile-Connected: ' + frame);
-        
-        stompClient.subscribe('/topic/init', function (data) {
-            getInitData(data.body);
-        });
 
- 		stompClient.send("/app/init", {}, "GetFullList");
-
+		// Initial Data Fetch //
+		$.ajax({
+  			url: "/rgw/init",
+  			beforeSend: function( xhr ) {
+    		xhr.overrideMimeType( "text/plain; charset=UTF-8" );
+  			}
+		})
+  			.done(function( data ) {
+    			// Init Data //
+				getInitData(data);
+    		}
+  		);
 
        	setTimeout(function(){
 			stompClient.subscribe('/topic/score', function (data) {
             	getBroadCastData(data.body);
         	});
-
-		},1000);
+		},3000);
 		
     });
 }
@@ -190,24 +212,52 @@ function UpdatedStatusAction_Deep(item,id){
 
 /* Page Event */
 function ScoreMin(){
-	stompClient.send("/app/score", {}, "GetFullList");
+	$.ajax({
+  			url: "/rgw/scores",
+  			beforeSend: function( xhr ) {
+    		xhr.overrideMimeType( "text/plain; charset=UTF-8" );
+  			}
+		})
+  			.done(function( data ) {
+    			// Init Data //
+				getBroadCastData(data);
+    		}
+  		);
 }
 
 function OwnerRefresh(){
-	var timer=30;
+	var timer=60;
 	var seconds=parseInt(timer,10);
 	seconds=seconds*1000;
 	
-	stompClient.subscribe('/topic/owners', function (data) {
-            getOwnerData(data.body);
-        	});
-
-	//Call Once//
-	stompClient.send("/app/owners", {}, "GetFullList");
+	//Call First Time//
+	$.ajax({
+  			url: "/rgw/owners",
+  			beforeSend: function( xhr ) {
+    		xhr.overrideMimeType( "text/plain; charset=UTF-8" );
+  			}
+		})
+  			.done(function( data ) {
+    			// Init Data //
+				getInitData(data);
+    		}
+  		);
 	
 	//Continue In Interval//
 	setInterval(function(){
-			stompClient.send("/app/owners", {}, "GetFullList");
+			
+		$.ajax({
+  			url: "/rgw/owners",
+  			beforeSend: function( xhr ) {
+    		xhr.overrideMimeType( "text/plain; charset=UTF-8" );
+  				}
+			})
+  			.done(function( data ) {
+    			// Init Data //
+				getBroadCastData(data);
+    			}
+  			);
+			
 		},seconds);
 }
 
@@ -257,6 +307,7 @@ $(function() {
 		mconnect();
     }
 	else{
+		
 		$('#DScore').prop("gstatus","true");
 		$('#Share').prop("gstatus","true");
 		$('#Deep').prop("gstatus","true");

@@ -249,7 +249,7 @@ public class Filters implements Filter,Runnable {
 		ScoreChain item=ScoreChain.get(Id);
 		String ListOfReason="<div style=\"width:150px;max-height: 100px;overflow:auto;\">";
 		
-		
+		 
 		// Get All Reason And Point // 
 		HashMap<String, Integer> Key=ScoreChain.get(Id).getReason(); 
 		
